@@ -32,6 +32,7 @@ const Task = (props) => {
 }
 
 const enableEdit = (e) =>{
+    //Enabling Renaming
     let listItem = e.target.parentNode;
 
 	let editInput = listItem.querySelector("input[type=text");
@@ -39,7 +40,6 @@ const enableEdit = (e) =>{
 
 	let containsClass = listItem.classList.contains("editMode");
 
-	//if the class of the parent is .editMode
 	if (containsClass) {
 		label.innerText = editInput.value;
 	} else {

@@ -2,8 +2,6 @@ import React from "react";
 import { AddToList } from './AddToList';
 import { PendingTasks } from './PendingTasks';
 import { CompletedTasks } from './CompletedTasks';
-import tasksCompletedJson from './tasksCompleted.json';
-import tasksPendingJson from './tasksPending.json';
 
 class TodoManager extends React.Component{
     constructor(){
@@ -13,52 +11,48 @@ class TodoManager extends React.Component{
         this.editItem = this.editItem.bind(this);
         this.markCompleted = this.markCompleted.bind(this);
         this.markPending = this.markPending.bind(this);
-        this.state = {
-            pendingTasks:tasksPendingJson,
-            completedTasks:tasksCompletedJson
-        }
     }
 
     addItem(e){
         if(e && e.target.value && e.keyCode===13){
-            const filteredList = this.state.pendingTasks;
+            const filteredList = this.props.pendingTasks;
             let newItem = {id:Math.random(), name: e.target.value};
             filteredList.push(newItem);
-            this.setState({pendingTasks:filteredList});
+            this.props.updatePendingTasks(filteredList)
             e.target.value="";
         }
     }
 
     deleteItem(id){
-        const filteredList = this.state.pendingTasks.filter((item)=>item.id!==id);
-        this.setState({pendingTasks:filteredList});
+        const filteredList = this.props.pendingTasks.filter((item)=>item.id!==id);
+        this.props.updatePendingTasks(filteredList)
     }
 
     editItem(e,id){
         if(e && e.target.value && e.keyCode===13){
-            const filteredList = this.state.pendingTasks;
+            const filteredList = this.props.pendingTasks;
             filteredList.map(item=>item.id===id?item.name=e.target.value:'')
-            this.setState({pendingTasks:filteredList});
+            this.props.updatePendingTasks(filteredList)
         }
     }
 
     markCompleted(e,item){
         if(e && e.target.checked){
-            const newPendingTasksList = this.state.pendingTasks.filter((todo)=>todo.id!==item.id);
-            this.setState({pendingTasks:newPendingTasksList});
-            const newCompletedTasksList = this.state.completedTasks;
+            const newPendingTasksList = this.props.pendingTasks.filter((todo)=>todo.id!==item.id);
+            this.props.updatePendingTasks(newPendingTasksList)
+            const newCompletedTasksList = this.props.completedTasks;
             newCompletedTasksList.push(item);
-            this.setState({completedTasks:newCompletedTasksList});
+            this.props.updateCompletedTasks(newCompletedTasksList)
         }
     }
 
     markPending(e,item){
         if(e && e.target.checked){
-            const newCompletedTasksList = this.state.completedTasks.filter((todo)=>todo.id!==item.id);
-            this.setState({completedTasks:newCompletedTasksList});
-            const newPendingTasksList = this.state.pendingTasks;
+            const newCompletedTasksList = this.props.completedTasks.filter((todo)=>todo.id!==item.id);
+            this.props.updateCompletedTasks(newCompletedTasksList)
+            const newPendingTasksList = this.props.pendingTasks;
             newPendingTasksList.push(item);
-            this.setState({pendingTasks:newPendingTasksList});
+            this.props.updatePendingTasks(newPendingTasksList)
         }
     }
 
@@ -66,9 +60,9 @@ class TodoManager extends React.Component{
         return(
             <div className="container">
                 <h2>TO DO LIST</h2>
-                <AddToList addItem={this.addItem}/>
-                <PendingTasks pendingTasks={this.state.pendingTasks}  deleteItem={this.deleteItem} editItem={this.editItem} markCompleted={this.markCompleted} />
-                <CompletedTasks completedTasks={this.state.completedTasks} markPending={this.markPending} />
+                <AddToList key={Math.random()} addItem={this.addItem}/>
+                <PendingTasks key={Math.random()} pendingTasks={this.props.pendingTasks}  deleteItem={this.deleteItem} editItem={this.editItem} markCompleted={this.markCompleted} />
+                <CompletedTasks key={Math.random()} completedTasks={this.props.completedTasks} markPending={this.markPending} />
             </div>
         )
     }
